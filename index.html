@@ -20,8 +20,7 @@
     </div>
 
     <div id="recovery-form">
-        <h3>Manage Events</h3>
-        <button onclick="downloadEvents()">Download Events</button>
+        <h3>Upload Events</h3>
         <input type="file" id="file-input" accept=".json">
         <button onclick="uploadEvents()">Upload Events</button>
     </div>
@@ -67,20 +66,6 @@
             events.push(event);
             Cookies.set('events', JSON.stringify(events), { expires: 365 });
             console.log('Saved events to cookies:', events);
-        }
-
-        function downloadEvents() {
-            const events = Cookies.getJSON('events') || [];
-            console.log('Downloading events:', events);
-            const blob = new Blob([JSON.stringify(events, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'calendar-events.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
         }
 
         function uploadEvents() {
