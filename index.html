@@ -64,12 +64,12 @@
         function saveEvent(event) {
             let events = Cookies.getJSON('events') || [];
             events.push(event);
-            Cookies.set('events', JSON.stringify(events), { expires: 365 });
+            Cookies.set('events', events, { expires: 365 });
         }
 
         function downloadEvents() {
             const events = Cookies.getJSON('events') || [];
-            const blob = new Blob([JSON.stringify(events)], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify(events, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -87,7 +87,7 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const events = JSON.parse(e.target.result);
-                    Cookies.set('events', JSON.stringify(events), { expires: 365 });
+                    Cookies.set('events', events, { expires: 365 });
                     window.calendar.removeAllEvents();
                     events.forEach(event => {
                         window.calendar.addEvent(event);
