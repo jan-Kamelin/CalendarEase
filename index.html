@@ -59,7 +59,7 @@
             const recoveryKey = generateRecoveryKey();
             let events = Cookies.getJSON(recoveryKey) || [];
             events.push(event);
-            Cookies.set(recoveryKey, events, { expires: 365 });
+            Cookies.set(recoveryKey, JSON.stringify(events), { expires: 365 });
         }
 
         function generateRecoveryKey() {
@@ -74,14 +74,14 @@
         function recoverEvents() {
             const recoveryKey = document.getElementById('recovery-key').value;
             const events = Cookies.getJSON(recoveryKey);
-            if (events) {
+            if (events && events.length > 0) {
                 window.calendar.removeAllEvents();
                 events.forEach(event => {
                     window.calendar.addEvent(event);
                 });
                 alert('Events recovered successfully!');
             } else {
-                alert('Invalid recovery key.');
+                alert('Invalid recovery key or no events found.');
             }
         }
     </script>
