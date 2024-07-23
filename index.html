@@ -37,6 +37,12 @@
             });
             calendar.render();
             window.calendar = calendar; // Make calendar accessible globally
+
+            // Load events from cookies if available
+            const savedEvents = Cookies.getJSON('events') || [];
+            savedEvents.forEach(event => {
+                calendar.addEvent(event);
+            });
         });
 
         function addEvent() {
