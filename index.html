@@ -20,10 +20,10 @@
     </div>
 
     <div id="recovery-form">
-        <h3>Recover Events</h3>
-        <label for="recovery-key">Recovery Key:</label>
-        <input type="text" id="recovery-key" required>
-        <button onclick="recoverEvents()">Recover Events</button>
+        <h3>Manage Events</h3>
+        <button onclick="downloadEvents()">Download Events</button>
+        <input type="file" id="file-input" accept=".json">
+        <button onclick="uploadEvents()">Upload Events</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
@@ -49,39 +49,48 @@
                 };
                 window.calendar.addEvent(event);
                 saveEvent(event);
-                alert('Event added! Your recovery key is: ' + generateRecoveryKey());
+                alert('Event added!');
             } else {
                 alert('Please provide both a title and a date.');
             }
         }
 
         function saveEvent(event) {
-            const recoveryKey = generateRecoveryKey();
-            let events = Cookies.getJSON(recoveryKey) || [];
+            let events = Cookies.getJSON('events') || [];
             events.push(event);
-            Cookies.set(recoveryKey, JSON.stringify(events), { expires: 365 });
+            Cookies.set('events', JSON.stringify(events), { expires: 365 });
         }
 
-        function generateRecoveryKey() {
-            let recoveryKey = Cookies.get('recoveryKey');
-            if (!recoveryKey) {
-                recoveryKey = Math.random().toString(36).substr(2, 9);
-                Cookies.set('recoveryKey', recoveryKey, { expires: 365 });
-            }
-            return recoveryKey;
+        function downloadEvents() {
+            const events = Cookies.getJSON('events') || [];
+            const blob = new Blob([JSON.stringify(events)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'calendar-events.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
-        function recoverEvents() {
-            const recoveryKey = document.getElementById('recovery-key').value;
-            const events = Cookies.getJSON(recoveryKey);
-            if (events && events.length > 0) {
-                window.calendar.removeAllEvents();
-                events.forEach(event => {
-                    window.calendar.addEvent(event);
-                });
-                alert('Events recovered successfully!');
+        function uploadEvents() {
+            const input = document.getElementById('file-input');
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const events = JSON.parse(e.target.result);
+                    Cookies.set('events', JSON.stringify(events), { expires: 365 });
+                    window.calendar.removeAllEvents();
+                    events.forEach(event => {
+                        window.calendar.addEvent(event);
+                    });
+                    alert('Events uploaded and added to the calendar!');
+                };
+                reader.readAsText(file);
             } else {
-                alert('Invalid recovery key or no events found.');
+                alert('Please select a file to upload.');
             }
         }
     </script>
