@@ -1,0 +1,104 @@
+/* Base styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container for the calendar */
+#calendar {
+    max-width: 900px;
+    width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Calendar header */
+.fc-toolbar {
+    background-color: navy;
+    color: #ffffff;
+    border-radius: 6px 6px 0 0;
+    padding: 10px;
+    text-align: center;
+}
+
+.fc-toolbar h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.fc-button {
+    background-color: gray;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.fc-button:hover {
+    background-color: navy;
+}
+
+.fc-button:focus {
+    outline: none;
+    box-shadow: 0 0 3px navy;
+}
+
+/* Calendar grid */
+.fc-daygrid-day {
+    border: 1px solid #ddd;
+}
+
+.fc-daygrid-day-number {
+    color: navy;
+    font-weight: bold;
+}
+
+/* Event styles */
+.fc-event {
+    background-color: navy;
+    border: none;
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* General utility classes */
+.text-center {
+    text-align: center;
+}
+
+.m-0 {
+    margin: 0;
+}
+
+.p-10 {
+    padding: 10px;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    color: gray;
+}
+
+.footer a {
+    color: navy;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
