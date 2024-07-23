@@ -40,6 +40,7 @@
 
             // Load events from cookies if available
             const savedEvents = Cookies.getJSON('events') || [];
+            console.log('Loaded events from cookies:', savedEvents);
             savedEvents.forEach(event => {
                 calendar.addEvent(event);
             });
@@ -64,11 +65,13 @@
         function saveEvent(event) {
             let events = Cookies.getJSON('events') || [];
             events.push(event);
-            Cookies.set('events', events, { expires: 365 });
+            Cookies.set('events', JSON.stringify(events), { expires: 365 });
+            console.log('Saved events to cookies:', events);
         }
 
         function downloadEvents() {
             const events = Cookies.getJSON('events') || [];
+            console.log('Downloading events:', events);
             const blob = new Blob([JSON.stringify(events, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -87,7 +90,8 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const events = JSON.parse(e.target.result);
-                    Cookies.set('events', events, { expires: 365 });
+                    console.log('Uploaded events:', events);
+                    Cookies.set('events', JSON.stringify(events), { expires: 365 });
                     window.calendar.removeAllEvents();
                     events.forEach(event => {
                         window.calendar.addEvent(event);
