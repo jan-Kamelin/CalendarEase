@@ -10,15 +10,80 @@
 <body>
     <div id="calendar"></div>
 
+    <div id="event-form">
+        <h3>Add Event</h3>
+        <label for="event-title">Title:</label>
+        <input type="text" id="event-title" required>
+        <label for="event-date">Date:</label>
+        <input type="date" id="event-date" required>
+        <button onclick="addEvent()">Add Event</button>
+    </div>
+
+    <div id="recovery-form">
+        <h3>Recover Events</h3>
+        <label for="recovery-key">Recovery Key:</label>
+        <input type="text" id="recovery-key" required>
+        <button onclick="recoverEvents()">Recover Events</button>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth'
+                initialView: 'dayGridMonth',
+                events: []
             });
             calendar.render();
+            window.calendar = calendar; // Make calendar accessible globally
         });
+
+        function addEvent() {
+            const title = document.getElementById('event-title').value;
+            const date = document.getElementById('event-date').value;
+            if (title && date) {
+                const event = {
+                    title: title,
+                    start: date
+                };
+                window.calendar.addEvent(event);
+                saveEvent(event);
+                alert('Event added! Your recovery key is: ' + generateRecoveryKey());
+            } else {
+                alert('Please provide both a title and a date.');
+            }
+        }
+
+        function saveEvent(event) {
+            const recoveryKey = generateRecoveryKey();
+            let events = Cookies.getJSON(recoveryKey) || [];
+            events.push(event);
+            Cookies.set(recoveryKey, events, { expires: 365 });
+        }
+
+        function generateRecoveryKey() {
+            let recoveryKey = Cookies.get('recoveryKey');
+            if (!recoveryKey) {
+                recoveryKey = Math.random().toString(36).substr(2, 9);
+                Cookies.set('recoveryKey', recoveryKey, { expires: 365 });
+            }
+            return recoveryKey;
+        }
+
+        function recoverEvents() {
+            const recoveryKey = document.getElementById('recovery-key').value;
+            const events = Cookies.getJSON(recoveryKey);
+            if (events) {
+                window.calendar.removeAllEvents();
+                events.forEach(event => {
+                    window.calendar.addEvent(event);
+                });
+                alert('Events recovered successfully!');
+            } else {
+                alert('Invalid recovery key.');
+            }
+        }
     </script>
 </body>
 </html>
